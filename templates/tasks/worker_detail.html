@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card shadow-sm p-4 mb-4">
+  <h1>
+      <span>Username: {{ worker.username }}</span>
+      <div>
+          <a href="{% url 'tasks:worker-update' pk=worker.id %}" class="btn btn-secondary link-to-page me-2">
+              <i class="bi bi-pencil me-1"></i> Update position
+          </a>
+          <a href="{% url 'tasks:worker-delete' pk=worker.id %}" class="btn btn-danger link-to-page">
+              <i class="bi bi-trash me-1"></i> Delete
+          </a>
+      </div>
+  </h1>
+
+  <div class="row g-2 mb-2">
+    <div class="col-sm-6">
+      <p><strong>First name:</strong> {{ worker.first_name|default:"-" }}</p>
+      <p><strong>Last name:</strong> {{ worker.last_name|default:"-" }}</p>
+    </div>
+    <div class="col-sm-6">
+      <p><strong>Position:</strong> <span class="badge bg-light text-dark border">{{ worker.position.name|default:"Not assigned" }}</span></p>
+      <p><strong>Is staff:</strong> <span class="badge {% if worker.is_staff %}text-bg-info{% else %}text-bg-secondary{% endif %}">{{ worker.is_staff }}</span></p>
+    </div>
+  </div>
+</div>
+
+<div class="card shadow-sm p-4">
+    <h4 class="h5 fw-bold mb-3"><i class="bi bi-kanban me-2 text-primary"></i>Tasks</h4>
+
+    {% for task in worker.assigned_tasks.all %}
+    <div class="p-3 border rounded mb-3 bg-light">
+      <div class="d-flex justify-content-between align-items-center mb-1">
+        <p class="m-0"><strong>Name:</strong> <a href="{% url 'tasks:task-detail' pk=task.id %}" class="fw-bold">{{ task.name }}</a></p>
+        <span class="text-muted small"><strong>Id:</strong> #{{ task.id }}</span>
+      </div>
+      <p class="m-0 text-secondary"><strong>Description:</strong> {{ task.description }}</p>
+    </div>
+
+    {% empty %}
+    <p class="text-muted m-0">No tasks!</p>
+    {% endfor %}
+</div>
+{% endblock %}

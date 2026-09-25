@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+<div class="card shadow-sm p-4 col-lg-8 mx-auto my-3">
+  <h1>{{ object|yesno:"Update,Create" }} Task</h1>
+  
+  <form action="" method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+
+    <div class="mt-4 pt-2 border-top d-flex gap-2">
+      <input class="btn btn-primary" type="submit" value="Submit">
+      <a href="{% url 'tasks:task-list' %}" class="btn btn-outline-secondary">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+  <h1>
+    <span>Task Types List</span>
+    <a href="{% url 'tasks:task-type-create' %}" class="btn btn-primary link-to-page">
+      <i class="bi bi-plus-lg me-1"></i> Create
+    </a>
+    <form action="" method="GET" class="form-inline w-100 mt-2">
+      {{ search_form|crispy }}
+      <input type="submit" value="Search" class="btn btn-secondary ms-2">
+    </form>
+  </h1>
+
+  {% if task_type_list %}
+    <div class="table-responsive shadow-sm">
+      <table class="table table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th style="width: 70px;">ID</th>
+            <th>Name</th>
+            <th style="width: 120px;">Update</th>
+            <th style="width: 120px;">Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for task_type in task_type_list %}
+            <tr>
+              <td class="text-muted fw-semibold">
+                  #{{ task_type.id }}
+              </td>
+              <td>
+                  <span class="fw-bold text-dark d-inline-flex align-items-center gap-2">
+                    <i class="bi bi-tag-fill text-primary" style="color: #9333ea !important;"></i>
+                    {{ task_type.name }}
+                  </span>
+              </td>
+              <td>
+                  <a href="{% url 'tasks:task-type-update' pk=task_type.id %}" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-pencil me-1"></i> Update
+                  </a>
+              </td>
+              <td>
+                  <a style="color: red" href="{% url 'tasks:task-type-delete' pk=task_type.id %}" class="btn btn-sm btn-outline-danger">
+                    <i class="bi bi-trash me-1"></i> Delete
+                  </a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  {% else %}
+      <div class="alert alert-light border text-center py-4 my-3">
+        <i class="bi bi-tags fs-2 text-muted d-block mb-2"></i>
+        <p class="m-0 text-muted">There are no task types in the service.</p>
+      </div>
+  {% endif %}
+{% endblock %}

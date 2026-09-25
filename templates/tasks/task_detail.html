@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="card shadow-sm p-4 mb-4">
+    <h1>
+      <span>Task: {{ task.name }}</span>
+      <div>
+        <a href="{% url 'tasks:task-update' pk=task.id %}" class="btn btn-secondary link-to-page me-2">
+          <i class="bi bi-pencil me-1"></i> Update
+        </a>
+        <a href="{% url 'tasks:task-delete' pk=task.id %}" class="btn btn-danger link-to-page">
+          <i class="bi bi-trash me-1"></i> Delete
+        </a>
+      </div>
+    </h1>
+
+    <div class="row g-3 mb-3">
+      <div class="col-md-6">
+        <p><strong>Type:</strong> <span class="badge bg-light text-dark border">{{ task.task_type.name }}</span></p>
+        <p>
+          <strong>Priority:</strong>
+          <span class="badge badge-priority badge-priority-{{ task.priority }}">
+            {{ task.get_priority_display }}
+          </span>
+        </p>
+      </div>
+      <div class="col-md-6">
+        <p><strong>Deadline:</strong> <span class="text-danger fw-semibold"><i class="bi bi-calendar-event me-1"></i>{{ task.deadline }}</span></p>
+        <p><strong>Status:</strong> 
+          {% if task.is_completed %}
+            <span class="badge text-bg-success"><i class="bi bi-check-circle me-1"></i>Completed</span>
+          {% else %}
+            <span class="badge text-bg-warning"><i class="bi bi-hourglass me-1"></i>In Progress</span>
+          {% endif %}
+        </p>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <strong>Description:</strong>
+      <div class="p-3 bg-light rounded mt-1 text-dark lh-base">
+        {{ task.description }}
+      </div>
+    </div>
+
+    <div class="mt-2">
+      {% if user in task.assignees.all %}
+        <a href="{% url 'tasks:toggle-task-assign' pk=task.id %}" class="btn btn-danger">
+          <i class="bi bi-person-dash me-1"></i> Remove me from this task
+        </a>
+      {% else %}
+        <a href="{% url 'tasks:toggle-task-assign' pk=task.id %}" class="btn btn-success">
+          <i class="bi bi-person-plus me-1"></i> Assign me to this task
+        </a>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="card shadow-sm p-4">
+    <h4 class="h5 fw-bold mb-3"><i class="bi bi-people me-2 text-primary"></i>Assignees:</h4>
+    {% if task.assignees.all %}
+      <ul class="list-group list-group-flush">
+      {% for worker in task.assignees.all %}
+        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+          <a href="{% url 'tasks:worker-detail' pk=worker.id %}" class="text-decoration-none fw-semibold">
+            <i class="bi bi-person-circle me-1"></i>{{ worker.username }} ({{ worker.first_name }} {{ worker.last_name }})
+          </a>
+          <span class="badge bg-light text-dark border">{{ worker.position.name|default:"Worker" }}</span>
+        </li>
+      {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-muted m-0">No assignees yet.</p>
+    {% endif %}
+  </div>
+{% endblock %}
