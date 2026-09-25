@@ -42,7 +42,7 @@ def index(request):
 
 class TaskTypeListView(LoginRequiredMixin, generic.ListView):
     model = TaskType
-    context_object_name = "task_types"
+    context_object_name = "task_type_list"
     template_name = "tasks/task_type_list.html"
     paginate_by = 5
 
@@ -62,17 +62,21 @@ class TaskTypeListView(LoginRequiredMixin, generic.ListView):
 class TaskTypeCreateView(LoginRequiredMixin, generic.CreateView):
     model = TaskType
     fields = "__all__"
+    template_name = "tasks/task_type_form.html"
     success_url = reverse_lazy("tasks:task-type-list")
 
 
 class TaskTypeUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = TaskType
     fields = "__all__"
+    template_name = "tasks/task_type_form.html"
     success_url = reverse_lazy("tasks:task-type-list")
 
 
 class TaskTypeDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = TaskType
+    template_name = "tasks/task_type_confirm_delete.html"
+    context_object_name = "task_type"
     success_url = reverse_lazy("tasks:task-type-list")
 
 
