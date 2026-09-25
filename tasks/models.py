@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, User
+from django.contrib.auth.models import AbstractUser
 from django.urls import reverse
 
 
@@ -23,7 +23,7 @@ class Position(models.Model):
 class Worker(AbstractUser):
     position = models.ForeignKey(
         Position,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name="workers",
         null=True,
         blank=True,
@@ -69,7 +69,7 @@ class Task(models.Model):
     )
 
     class Meta:
-        ordering = ["pk", "priority", "deadline"]
+        ordering = ["pk"]
 
     def __str__(self):
         return self.name

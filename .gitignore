@@ -4,4 +4,4 @@ venv
 __pycache__
 db.sqlite3
 staticfiles/
-tasks/migrations/
+.env

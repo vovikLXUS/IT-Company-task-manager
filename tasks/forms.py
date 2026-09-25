@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 
-from tasks.models import TaskType, Position, Worker, Task
+from tasks.models import Task, Worker
 
 
 class TaskForm(forms.ModelForm):

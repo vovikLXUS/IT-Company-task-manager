@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -132,7 +132,9 @@ class WorkerListView(LoginRequiredMixin, generic.ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(WorkerListView, self).get_context_data(**kwargs)
         username = self.request.GET.get("username", "")
-        context["search_form"] = WorkerUsernameSearchForm(initial={"username": username})
+        context["search_form"] = WorkerUsernameSearchForm(
+            initial={"username": username}
+        )
         return context
 
 
@@ -178,7 +180,11 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
 
 class TaskDetailView(LoginRequiredMixin, generic.DetailView):
     model = Task
-    queryset = Task.objects.all().select_related("task_type").prefetch_related("assignees")
+    queryset = (
+        Task.objects.all()
+        .select_related("task_type")
+        .prefetch_related("assignees")
+    )
 
 
 class TaskCreateView(LoginRequiredMixin, generic.CreateView):
@@ -200,10 +206,12 @@ class TaskDeleteView(LoginRequiredMixin, generic.DeleteView):
 
 @login_required
 def toggle_assign_to_task(request, pk):
-    worker = Worker.objects.get(id=request.user.id)
-    task = Task.objects.get(id=pk)
-    if worker in task.assignees.all():
-        task.assignees.remove(worker)
-    else:
-        task.assignees.add(worker)
-    return HttpResponseRedirect(reverse_lazy("tasks:task-detail", args=[pk]))
+    task = get_object_or_404(Task, pk=pk)
+    if request.method == "POST":
+        if request.user in task.assignees.all():
+            task.assignees.remove(request.user)
+        else:
+            task.assignees.add(request.user)
+    return HttpResponseRedirect(
+        reverse_lazy("tasks:task-detail", args=[pk])
+    )

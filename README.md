@@ -79,7 +79,11 @@ IT-Company-task-manager/
 │   ├── apps.py                  # Application configuration
 │   ├── forms.py                 # Forms for validation and filtering
 │   ├── models.py                # Database models (Task, Worker, Position, TaskType)
-│   ├── tests.py                 # Test cases
+│   ├── tests/                   # Automated test suite
+│   │   ├── test_admin.py
+│   │   ├── test_forms.py
+│   │   ├── test_models.py
+│   │   └── test_views.py
 │   ├── urls.py                  # App-specific URL routes
 │   └── views.py                 # Class-Based Views for CRUD operations
 ├── templates/                   # HTML templates
@@ -129,18 +133,29 @@ cd IT-Company-task-manager
 pip install -r requirements.txt
 ```
 
-### 4. Run database migrations
+### 4. Configure environment variables
+Create a `.env` file from `.env.example` (or configure your own `SECRET_KEY` and `DEBUG`):
+* **Windows (PowerShell):**
+  ```powershell
+  Copy-Item .env.example .env
+  ```
+* **Linux / macOS / Git Bash:**
+  ```bash
+  cp .env.example .env
+  ```
+
+### 5. Run database migrations
 ```bash
 python manage.py migrate
 ```
 
-### 5. Create a superuser (Administrator)
+### 6. Create a superuser (Administrator)
 ```bash
 python manage.py createsuperuser
 ```
 *(Follow the prompt to provide a `username`, `email`, and `password`).*
 
-### 6. Start the development server
+### 7. Start the development server
 ```bash
 python manage.py runserver
 ```
