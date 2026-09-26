@@ -39,7 +39,7 @@ To provide a clean, reliable, and user-friendly platform for developers and proj
 
 The relationship between the system entities is illustrated below:
 
-![Database Structure](IT-company-task-manager/img.png)
+![Database Structure](assets/img.png)
 
 ### 📊 Entity Descriptions
 
@@ -67,7 +67,9 @@ The project follows Django's standard **MTV (Model - Template - View)** pattern:
 
 ```text
 IT-Company-task-manager/
-├── IT_company_task_manager/      # Main project configuration
+├── assets/
+│   ├── img.png                  # Database structure
+├── IT_company_task_manager/     # Main project configuration
 │   ├── __init__.py
 │   ├── asgi.py
 │   ├── settings.py              # Application settings (installed apps, DB, auth)
