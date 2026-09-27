@@ -18,6 +18,47 @@ To provide a clean, reliable, and user-friendly platform for developers and proj
 
 ---
 
+## 📸 Demo
+
+### 🔐 Authentication
+* **Login Page:**
+  ![Login Page](assets/demo_photos/login_page.png)
+
+### 🏠 Dashboard
+![Dashboard](assets/demo_photos/home_page.png)
+
+### 📋 Task Management
+* **Tasks List & Filtering:**
+  ![Tasks List](assets/demo_photos/tasks_page.png)
+
+* **Task Details:**
+  ![Task Details](assets/demo_photos/about_task_page.png)
+
+* **Create Task:**
+  ![Create Task](assets/demo_photos/create_task_page.png)
+
+* **Update Task:**
+  ![Update Task](assets/demo_photos/update_task_page.png)
+
+### 👥 Team & Worker Management
+* **Workers List:**
+  ![Workers List](assets/demo_photos/workers_page.png)
+
+* **Worker Profile & Assigned Tasks:**
+  ![Worker Profile](assets/demo_photos/about_worker_page.png)
+
+* **Create Worker:**
+  ![Create Worker](assets/demo_photos/create_worker_page.png)
+
+### 🏷️ Positions & Task Types
+* **Positions:**
+  ![Positions](assets/demo_photos/positions_page.png)
+
+* **Task Types:**
+  ![Task Types](assets/demo_photos/task_types_page.png)
+
+---
+
 ## 🛠 Technologies Used
 
 * **Backend:**
@@ -68,7 +109,19 @@ The project follows Django's standard **MTV (Model - Template - View)** pattern:
 ```text
 IT-Company-task-manager/
 ├── assets/
-│   ├── db_structure.png                  # Database structure
+│   ├── db_structure.png         # Database structure
+│   ├── demo_photos/             # Application screenshots
+│   │   ├── about_task_page.png
+│   │   ├── about_worker_page.png
+│   │   ├── create_task_page.png
+│   │   ├── create_worker_page.png
+│   │   ├── home_page.png
+│   │   ├── login_page.png
+│   │   ├── positions_page.png
+│   │   ├── task_types_page.png
+│   │   ├── tasks_page.png
+│   │   ├── update_task_page.png
+│   │   └── workers_page.png
 ├── IT_company_task_manager/     # Main project configuration
 │   ├── __init__.py
 │   ├── asgi.py
