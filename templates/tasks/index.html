@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="mb-4">
+    <h1>IT Company Task Manager Home</h1>
+    <p class="lead text-muted">Welcome to the Best Task Manager Ever!</p>
+</div>
+
+<!-- Stat Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-xl-3">
+        <div class="card card-stat h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-muted small fw-semibold text-uppercase">Tasks</div>
+                    <div class="fs-2 fw-bold text-dark">{{ num_tasks }}</div>
+                    <a href="{% url 'tasks:task-list' %}" class="small text-decoration-none text-primary">
+                        View tasks <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="stat-icon bg-primary-subtle text-primary">
+                    <i class="bi bi-check2-square"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="card card-stat h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-muted small fw-semibold text-uppercase">Workers</div>
+                    <div class="fs-2 fw-bold text-dark">{{ num_workers }}</div>
+                    <a href="{% url 'tasks:worker-list' %}" class="small text-decoration-none text-success">
+                        View team <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="stat-icon bg-success-subtle text-success">
+                    <i class="bi bi-people"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="card card-stat h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-muted small fw-semibold text-uppercase">Positions</div>
+                    <div class="fs-2 fw-bold text-dark">{{ num_positions }}</div>
+                    <a href="{% url 'tasks:position-list' %}" class="small text-decoration-none text-warning">
+                        View positions <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="stat-icon bg-warning-subtle text-warning">
+                    <i class="bi bi-person-badge"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="card card-stat h-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-muted small fw-semibold text-uppercase">Task Types</div>
+                    <div class="fs-2 fw-bold text-dark">{{ num_task_types }}</div>
+                    <a href="{% url 'tasks:task-type-list' %}" class="small text-decoration-none text-purple" style="color: #9333ea;">
+                        View types <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="stat-icon bg-info-subtle text-info">
+                    <i class="bi bi-tags"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Dynamic content card -->
+<div class="card shadow-sm p-4 mb-4">
+    <h3 class="h5 fw-bold mb-3"><i class="bi bi-activity text-primary me-2"></i>Dynamic content</h3>
+    <p class="text-secondary mb-2">The IT Company task manager has the following record counts:</p>
+    <ul class="list-group list-group-flush mb-3">
+        <li class="list-group-item px-0 d-flex justify-content-between">
+            <span><strong>Task types:</strong></span>
+            <span class="badge bg-light text-dark border">{{ num_task_types }}</span>
+        </li>
+        <li class="list-group-item px-0 d-flex justify-content-between">
+            <span><strong>Positions:</strong></span>
+            <span class="badge bg-light text-dark border">{{ num_positions }}</span>
+        </li>
+        <li class="list-group-item px-0 d-flex justify-content-between">
+            <span><strong>Workers:</strong></span>
+            <span class="badge bg-light text-dark border">{{ num_workers }}</span>
+        </li>
+        <li class="list-group-item px-0 d-flex justify-content-between">
+            <span><strong>Tasks:</strong></span>
+            <span class="badge bg-light text-dark border">{{ num_tasks }}</span>
+        </li>
+    </ul>
+
+    <div class="alert alert-light border d-flex align-items-center gap-2 mb-0 py-2">
+        <i class="bi bi-eye text-primary"></i>
+        <span>You have visited this page <strong>{{ num_visits }}</strong> time{{ num_visits|pluralize }}.</span>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+<h1>
+    <span>Task List</span>
+    <div class="d-flex align-items-center gap-2">
+        <a href="{% url 'tasks:task-create' %}" class="btn btn-primary link-to-page">
+            <i class="bi bi-plus-lg me-1"></i> Create
+        </a>
+    </div>
+    <form action="" method="GET" class="form-inline w-100 mt-2">
+        {{ search_form|crispy }}
+        <input type="submit" value="Search" class="btn btn-secondary ms-2">
+    </form>
+</h1>
+
+{% if task_list %}
+<div class="table-responsive shadow-sm">
+    <table class="table table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th style="width: 60px;">ID</th>
+                <th>Task name</th>
+                <th>Task type</th>
+                <th>Priority</th>
+                <th>Deadline</th>
+                <th>Is completed</th>
+                <th>Assignees</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in task_list %}
+            <tr>
+                <td class="text-muted fw-semibold">#{{ task.id }}</td>
+                <td>
+                    <a href="{% url 'tasks:task-detail' pk=task.id %}" class="fw-bold text-decoration-none text-dark">
+                        {{ task.name }}
+                    </a>
+                </td>
+                <td>
+                    <span class="badge bg-light text-dark border">{{ task.task_type.name }}</span>
+                </td>
+                <td>
+                    <span class="badge badge-priority badge-priority-{{ task.priority }}">
+                        {{ task.get_priority_display }}
+                    </span>
+                </td>
+                <td>
+                    <span class="text-secondary small">
+                        <i class="bi bi-calendar3 me-1"></i>{{ task.deadline }}
+                    </span>
+                </td>
+                <td>
+                    {% if task.is_completed %}
+                        <span class="badge text-bg-success">
+                            <i class="bi bi-check-circle me-1"></i>Yes
+                        </span>
+                    {% else %}
+                        <span class="badge text-bg-warning">
+                            <i class="bi bi-hourglass me-1"></i>No
+                        </span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% for worker in task.assignees.all %}
+                        <a href="{{ worker.get_absolute_url }}" class="badge bg-secondary-subtle text-secondary-emphasis text-decoration-none border me-1">
+                            <i class="bi bi-person me-1"></i>{{ worker.username }}
+                        </a>
+                    {% empty %}
+                        <span class="text-muted small fst-italic">No assignees</span>
+                    {% endfor %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-light border text-center py-4 my-3">
+    <i class="bi bi-inbox fs-2 text-muted d-block mb-2"></i>
+    <p class="m-0 text-muted">There are no tasks in the service.</p>
+</div>
+{% endif %}
+{% endblock %}
