@@ -471,4 +471,6 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+dump.json
+
 # End of https://www.toptal.com/developers/gitignore/api/django,python,jetbrains,visualstudiocode,windows,macos,linux
