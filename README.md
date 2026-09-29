@@ -123,11 +123,11 @@ IT-Company-task-manager/
 │   │   ├── update_task_page.png
 │   │   └── workers_page.png
 ├── IT_company_task_manager/     # Main project configuration
-│   ├── settings/                # Application settings (installed apps, DB, auth)
+│   ├── settings/                
 │   │   ├── __init__.py
-│   │   ├── base.py
-│   │   ├── dev.py
-│   │   └── prod.py
+│   │   ├── base.py              # Base settings file
+│   │   ├── dev.py       # File with settings for local development
+│   │   └── prod.py        # Settings for production environment
 │   ├── __init__.py
 │   ├── asgi.py          
 │   ├── urls.py                  # Root URL configuration
@@ -155,6 +155,8 @@ IT-Company-task-manager/
 │       └── styles.css           # Custom styling and color scheme
 ├── .gitignore                   # Git ignore file
 ├── requirements.txt             # Python dependencies
+├── .env.example                 # .env example
+├── README.md                    # Description of the project
 └── manage.py                    # Django management script
 ```
 
