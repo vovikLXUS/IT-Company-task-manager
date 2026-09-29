@@ -123,9 +123,13 @@ IT-Company-task-manager/
 │   │   ├── update_task_page.png
 │   │   └── workers_page.png
 ├── IT_company_task_manager/     # Main project configuration
+│   ├── settings/                # Application settings (installed apps, DB, auth)
+│   │   ├── __init__.py
+│   │   ├── base.py
+│   │   ├── dev.py
+│   │   └── prod.py
 │   ├── __init__.py
-│   ├── asgi.py
-│   ├── settings.py              # Application settings (installed apps, DB, auth)
+│   ├── asgi.py          
 │   ├── urls.py                  # Root URL configuration
 │   └── wsgi.py
 ├── tasks/                       # Core task management application
