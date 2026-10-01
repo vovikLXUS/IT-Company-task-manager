@@ -114,6 +114,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTH_USER_MODEL = "tasks.Worker"
 
+AUTHENTICATION_BACKENDS = [
+    "tasks.backends.EmailOrUsernameModelBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
+
 LOGIN_REDIRECT_URL = "/"
 
 # Internationalization

@@ -7,8 +7,10 @@ from tasks.forms import (
     TaskNameSearchForm,
     TaskTypeNameSearchForm,
     WorkerCreationForm,
+    WorkerUpdateForm,
     WorkerPositionUpdateForm,
     WorkerUsernameSearchForm,
+    LoginForm,
 )
 from tasks.models import Position, TaskType
 
@@ -37,6 +39,7 @@ class FormTests(TestCase):
     def test_worker_creation_form(self):
         form_data = {
             "username": "newworker",
+            "email": "newworker@company.com",
             "first_name": "Alice",
             "last_name": "Smith",
             "position": self.position.pk,
@@ -44,6 +47,23 @@ class FormTests(TestCase):
             "password2": "ComplexPassword123!",
         }
         form = WorkerCreationForm(data=form_data)
+        self.assertTrue(form.is_valid())
+
+    def test_worker_update_form(self):
+        form_data = {
+            "username": "updated_username",
+            "email": "updated@company.com",
+            "first_name": "Bob",
+            "last_name": "Brown",
+            "position": self.position.pk,
+        }
+        form = WorkerUpdateForm(instance=self.worker, data=form_data)
+        self.assertTrue(form.is_valid())
+
+    def test_login_form(self):
+        form = LoginForm(
+            data={"username": "devops_user", "password": "password123"}
+        )
         self.assertTrue(form.is_valid())
 
     def test_worker_position_update_form(self):

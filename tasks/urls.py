@@ -6,7 +6,7 @@ from tasks.views import (
     WorkerDetailView,
     WorkerCreateView,
     WorkerRegisterView,
-    WorkerPositionUpdateView,
+    WorkerUpdateView,
     WorkerDeleteView,
     TaskListView,
     TaskDetailView,
@@ -45,7 +45,7 @@ urlpatterns = [
     ),
     path(
         "workers/<int:pk>/update/",
-        WorkerPositionUpdateView.as_view(),
+        WorkerUpdateView.as_view(),
         name="worker-update",
     ),
     path(

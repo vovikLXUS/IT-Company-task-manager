@@ -231,3 +231,128 @@ class RegisterViewTests(TestCase):
         response = self.client.post(url, data=data)
         self.assertEqual(response.status_code, 200)
         self.assertFalse(get_user_model().objects.filter(username="").exists())
+
+
+class WorkerUpdateViewTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.position1 = Position.objects.create(name="Junior Dev")
+        self.position2 = Position.objects.create(name="Senior Dev")
+        self.user = get_user_model().objects.create_user(
+            username="initial_user",
+            email="initial@test.com",
+            first_name="InitialFirst",
+            last_name="InitialLast",
+            position=self.position1,
+            password="secretpassword123",
+        )
+
+        self.other_user = get_user_model().objects.create_user(
+            username="other_worker",
+            email="other@test.com",
+            password="secretpassword123",
+        )
+        self.admin_user = get_user_model().objects.create_superuser(
+            username="admin_worker",
+            email="admin@test.com",
+            password="adminpassword123",
+        )
+
+    def test_worker_update_all_fields_own_profile(self):
+        self.client.force_login(self.user)
+        url = reverse("tasks:worker-update", kwargs={"pk": self.user.pk})
+        data = {
+            "username": "updated_user",
+            "email": "updated@test.com",
+            "first_name": "UpdatedFirst",
+            "last_name": "UpdatedLast",
+            "position": self.position2.pk,
+        }
+        response = self.client.post(url, data=data)
+        self.assertEqual(response.status_code, 302)
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.username, "updated_user")
+        self.assertEqual(self.user.email, "updated@test.com")
+        self.assertEqual(self.user.first_name, "UpdatedFirst")
+        self.assertEqual(self.user.last_name, "UpdatedLast")
+        self.assertEqual(self.user.position, self.position2)
+
+    def test_admin_can_update_other_worker(self):
+        self.client.force_login(self.admin_user)
+        url = reverse("tasks:worker-update", kwargs={"pk": self.user.pk})
+        data = {
+            "username": "admin_changed_name",
+            "email": "initial@test.com",
+            "first_name": "AdminChanged",
+            "last_name": "AdminChanged",
+            "position": self.position2.pk,
+        }
+        response = self.client.post(url, data=data)
+        self.assertEqual(response.status_code, 302)
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.username, "admin_changed_name")
+
+    def test_worker_cannot_update_other_worker(self):
+        self.client.force_login(self.other_user)
+        url = reverse("tasks:worker-update", kwargs={"pk": self.user.pk})
+        data = {
+            "username": "hacked_user",
+            "email": "initial@test.com",
+            "first_name": "Hacked",
+            "last_name": "Hacked",
+            "position": self.position2.pk,
+        }
+        response = self.client.post(url, data=data)
+        self.assertEqual(response.status_code, 403)
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.username, "initial_user")
+
+
+class LoginAuthenticationTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = get_user_model().objects.create_user(
+            username="unique_login_user",
+            email="worker_auth@company.com",
+            password="securePassword123!",
+        )
+
+    def test_login_with_username(self):
+        login_url = reverse("login")
+        response = self.client.post(
+            login_url,
+            {
+                "username": "unique_login_user",
+                "password": "securePassword123!",
+            },
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            int(self.client.session["_auth_user_id"]), self.user.pk
+        )
+
+    def test_login_with_email(self):
+        login_url = reverse("login")
+        response = self.client.post(
+            login_url,
+            {
+                "username": "worker_auth@company.com",
+                "password": "securePassword123!",
+            },
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            int(self.client.session["_auth_user_id"]), self.user.pk
+        )
+
+    def test_login_with_wrong_password(self):
+        login_url = reverse("login")
+        response = self.client.post(
+            login_url,
+            {
+                "username": "worker_auth@company.com",
+                "password": "wrongpassword",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn("_auth_user_id", self.client.session)
