@@ -38,6 +38,26 @@ class ViewTests(TestCase):
         self.assertEqual(response.context["num_workers"], 1)
         self.assertEqual(response.context["num_positions"], 1)
         self.assertEqual(response.context["num_task_types"], 1)
+        self.assertContains(
+            response,
+            "https://github.com/vovikLXUS/IT-Company-task-manager",
+        )
+        self.assertContains(
+            response,
+            "Get connected with me on social networks:",
+        )
+        self.assertContains(response, "https://www.instagram.com/exl7pi/")
+        self.assertContains(
+            response,
+            "https://www.linkedin.com/in/volodya-datsyshyn-b490053b7/",
+        )
+        self.assertContains(response, "https://github.com/vovikLXUS")
+        self.assertContains(response, "https://t.me/lexusbone")
+        self.assertContains(
+            response,
+            "Created by <strong>Volodymyr Datsyshyn</strong>",
+        )
+        self.assertContains(response, "https://mate.academy/")
 
     def test_task_list_view(self):
         self.client.force_login(self.user)

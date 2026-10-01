@@ -35,12 +35,18 @@
             {% endblock %}
 
         </div>
-        <div class="col-md-9 col-lg-10 content-col">
+        <div class="col-md-9 col-lg-10 content-col d-flex flex-column">
 
-            {% block content %}{% endblock %}
+            <div class="flex-grow-1">
+                {% block content %}{% endblock %}
 
-            {% block pagination %}
-                {% include "includes/pagination.html" %}
+                {% block pagination %}
+                    {% include "includes/pagination.html" %}
+                {% endblock %}
+            </div>
+
+            {% block footer %}
+                {% include "includes/footer.html" %}
             {% endblock %}
 
         </div>
