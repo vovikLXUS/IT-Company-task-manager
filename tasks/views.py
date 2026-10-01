@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views import generic
+from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from tasks.models import TaskType, Position, Worker, Task
@@ -147,6 +148,23 @@ class WorkerCreateView(LoginRequiredMixin, generic.CreateView):
     model = Worker
     form_class = WorkerCreationForm
     success_url = reverse_lazy("tasks:worker-list")
+
+
+class WorkerRegisterView(generic.CreateView):
+    model = Worker
+    form_class = WorkerCreationForm
+    template_name = "registration/register.html"
+    success_url = reverse_lazy("tasks:index")
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return HttpResponseRedirect(reverse_lazy("tasks:index"))
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        login(self.request, self.object)
+        return response
 
 
 class WorkerPositionUpdateView(LoginRequiredMixin, generic.UpdateView):

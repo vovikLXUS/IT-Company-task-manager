@@ -146,3 +146,68 @@ class ToggleAssignToTaskTests(TestCase):
 
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
+
+
+class RegisterViewTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.position = Position.objects.create(name="Backend Developer")
+
+    def test_register_get_unauthenticated(self):
+        url = reverse("register")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "registration/register.html")
+
+        # Also test tasks:register
+        task_reg_url = reverse("tasks:register")
+        response2 = self.client.get(task_reg_url)
+        self.assertEqual(response2.status_code, 200)
+
+    def test_register_get_authenticated_redirects(self):
+        user = get_user_model().objects.create_user(
+            username="existing_user",
+            password="securepassword123",
+        )
+        self.client.force_login(user)
+        response = self.client.get(reverse("register"))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("tasks:index"))
+
+    def test_register_post_valid_data_creates_and_logs_in_user(self):
+        url = reverse("register")
+        data = {
+            "username": "registered_worker",
+            "first_name": "John",
+            "last_name": "Doe",
+            "position": self.position.pk,
+            "password1": "StrongPass123!",
+            "password2": "StrongPass123!",
+        }
+        response = self.client.post(url, data=data)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("tasks:index"))
+
+        user = (
+            get_user_model()
+            .objects.filter(username="registered_worker")
+            .first()
+        )
+        self.assertIsNotNone(user)
+        self.assertEqual(user.first_name, "John")
+        self.assertEqual(user.last_name, "Doe")
+        self.assertEqual(user.position, self.position)
+
+        # Check user is logged in
+        self.assertEqual(int(self.client.session["_auth_user_id"]), user.pk)
+
+    def test_register_post_invalid_data(self):
+        url = reverse("register")
+        data = {
+            "username": "",
+            "password1": "pass",
+            "password2": "mismatch",
+        }
+        response = self.client.post(url, data=data)
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(get_user_model().objects.filter(username="").exists())
