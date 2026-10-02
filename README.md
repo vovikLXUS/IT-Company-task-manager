@@ -38,12 +38,12 @@ To provide a clean, reliable, and user-friendly platform for developers and proj
 * **Worker Profiles:** Detailed profile views with personal info and active assigned tasks.
 * **Granular Profile Updates:** Workers can update all their personal details (`username`, `email`, `first_name`, `last_name`, `position`).
 * **Role-Based Access Control:** Strict permission check powered by `UserPassesTestMixin` — workers can only update their own profile, whereas administrators (`is_staff` / superusers) can update any worker.
-* **Team Directory:** Paginated list of all team members with username search and role badges.
+* **Team Directory:** Paginated list of all team members with username search and role badges (technical administrators/superusers are automatically filtered out to present a clean team roster).
 
 ### 📋 Task Management
 * **Task Catalog & Search:** Paginated overview of all tasks with real-time name search filtering.
 * **Task Details & Direct Toggle:** Dedicated task view displaying urgency badges, deadlines, assignees, and a one-click button to self-assign or unassign from the task.
-* **Complete Task CRUD:** Create, read, update, and delete tasks with multiple assignee selection.
+* **Complete Task CRUD:** Create, read, update, and delete tasks with multiple assignee selection (technical administrators are excluded from assignee options to allocate work strictly to actual workers).
 
 ### 🏷️ Positions & Task Types
 * **Positions Management:** Manage job roles (`Developer`, `QA`, `Project Manager`, `DevOps`, `Designer`, etc.) with search and full CRUD operations.
@@ -130,7 +130,7 @@ To provide a clean, reliable, and user-friendly platform for developers and proj
   * [Plus Jakarta Sans](https://fonts.google.com/specimen/Plus+Jakarta+Sans) — Modern typography (Google Fonts)
   * Custom CSS stylesheet ([`styles.css`](static/css/styles.css))
 * **Code Quality & Testing:**
-  * Automated Test Suite with **37 test cases** covering models, forms, views, auth, and permissions
+  * Automated Test Suite with **38 test cases** covering models, forms, views, auth, and permissions
   * [Flake8](https://flake8.pycqa.org/) — PEP 8 style guide enforcement
   * [Black](https://black.readthedocs.io/) — Python code formatter
 
@@ -202,7 +202,7 @@ IT-Company-task-manager/
 │   ├── backends.py              # Custom auth backend (username or email login)
 │   ├── forms.py                 # Forms for validation, auth, and filtering
 │   ├── models.py                # Database models (Task, Worker, Position, TaskType)
-│   ├── tests/                   # Automated test suite (37 tests)
+│   ├── tests/                   # Automated test suite (38 tests)
 │   │   ├── test_admin.py
 │   │   ├── test_forms.py
 │   │   ├── test_models.py
@@ -240,7 +240,7 @@ IT-Company-task-manager/
 * **Custom Authentication Backend:** `EmailOrUsernameModelBackend` enables users to authenticate using either their username or email address.
 * **Access Control & Permissions:** Protected views enforce authentication with `LoginRequiredMixin`. `WorkerUpdateView` enforces role-based access via `UserPassesTestMixin`, guaranteeing that users can only modify their own profile while administrators retain full modification rights.
 * **Query Optimization:** Efficient database querying utilizing `select_related` for ForeignKeys (`task_type`, `position`) and `prefetch_related` for ManyToMany relationships (`assignees`, `assigned_tasks`) to eliminate N+1 query bottlenecks.
-* **Comprehensive Testing:** 37 automated unit and integration tests covering models, forms, access control, registration, and views.
+* **Comprehensive Testing:** 38 automated unit and integration tests covering models, forms, access control, registration, and views.
 
 ---
 
