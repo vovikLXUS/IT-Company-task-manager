@@ -2,6 +2,14 @@
 
 A web application designed for tracking tasks, organizing team workload, and managing roles within an IT company, built with **Django** and styled with **Bootstrap 5**.
 
+🚀 **Live Production Demo:** [https://it-company-task-manager-v9cq.onrender.com/](https://it-company-task-manager-v9cq.onrender.com/)
+
+[![Live Demo](https://img.shields.io/badge/Demo-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://it-company-task-manager-v9cq.onrender.com/)
+[![Python](https://img.shields.io/badge/Python-3.12%2B-blue?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Django](https://img.shields.io/badge/Django-6.1%2B-092E20?style=for-the-badge&logo=django&logoColor=white)](https://www.djangoproject.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Neon-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)](https://neon.tech/)
+[![Bootstrap 5](https://img.shields.io/badge/Bootstrap-5.3-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)](https://getbootstrap.com/)
+
 ---
 
 ## 📌 Project Overview
@@ -104,12 +112,18 @@ To provide a clean, reliable, and user-friendly platform for developers and proj
 * **Backend:**
   * [Python 3.12+](https://www.python.org/)
   * [Django 6.1+](https://www.djangoproject.com/) — High-level Python web framework
+  * [Gunicorn 26.2+](https://gunicorn.org/) — High-performance WSGI HTTP Server for production
   * [Django Crispy Forms](https://django-crispy-forms.readthedocs.io/) & [Crispy Bootstrap 5](https://github.com/django-crispy-forms/crispy-bootstrap5) — Elegant form rendering with Bootstrap 5
-  * [WhiteNoise](http://whitenoise.evans.io/) — Efficient static file serving for production
-  * [Django Debug Toolbar](https://django-debug-toolbar.readthedocs.io/) — Performance profiling and query optimization
-  * Custom Authentication Backend (`EmailOrUsernameModelBackend`) — Dual username/email authentication
-* **Database:**
-  * [SQLite](https://www.sqlite.org/) (used by default for local development, easily configurable for PostgreSQL)
+  * [WhiteNoise](http://whitenoise.evans.io/) — Efficient static file serving directly from Django in production
+  * [Django Debug Toolbar](https://django-debug-toolbar.readthedocs.io/) — Performance profiling and query optimization (development)
+  * Custom Authentication Backend (`EmailOrUsernameModelBackend`) — Case-insensitive dual username/email authentication
+* **Database & ORM:**
+  * [PostgreSQL](https://www.postgresql.org/) (Serverless Postgres on [Neon](https://neon.tech/) with SSL connection for production)
+  * [psycopg2-binary](https://www.psycopg.org/) — PostgreSQL database adapter for Python
+  * [SQLite](https://www.sqlite.org/) (lightweight local development database)
+* **Cloud & Hosting:**
+  * [Render](https://render.com/) — Cloud platform hosting the live production web service
+  * [Neon](https://neon.tech/) — Cloud serverless PostgreSQL database provider
 * **Frontend:**
   * [Bootstrap 5.3](https://getbootstrap.com/) — Responsive CSS/JS framework
   * [Bootstrap Icons](https://icons.getbootstrap.com/) — Modern vector icon library
@@ -174,13 +188,13 @@ IT-Company-task-manager/
 ├── IT_company_task_manager/     # Main project configuration
 │   ├── settings/                
 │   │   ├── __init__.py
-│   │   ├── base.py              # Base settings (apps, auth backends, crispy)
-│   │   ├── dev.py               # Development settings
-│   │   └── prod.py              # Production settings
+│   │   ├── base.py              # Shared base settings (apps, auth backends, crispy)
+│   │   ├── dev.py               # Development settings (SQLite, Debug Toolbar)
+│   │   └── prod.py              # Production settings (PostgreSQL on Neon, WhiteNoise, HTTPS)
 │   ├── __init__.py
 │   ├── asgi.py          
 │   ├── urls.py                  # Root URL configuration (login, register, admin)
-│   └── wsgi.py
+│   └── wsgi.py                  # WSGI config for Gunicorn deployment
 ├── tasks/                       # Core task management application
 │   ├── migrations/              # Database migration history
 │   ├── admin.py                 # Admin site registrations
@@ -211,6 +225,8 @@ IT-Company-task-manager/
 │       └── styles.css           # Custom styling and color scheme
 ├── staticfiles/                 # Collected static assets
 ├── .gitignore                   # Git ignore file
+├── build.sh                     # Build script for Render (pip, collectstatic, migrate)
+├── dump.json                    # Initial database fixtures and demo dataset
 ├── requirements.txt             # Python dependencies
 ├── .env.example                 # Environment variables template
 ├── README.md                    # Project documentation
@@ -218,6 +234,8 @@ IT-Company-task-manager/
 ```
 
 ### 🔑 Key Architectural Highlights:
+* **Multi-Environment Settings Architecture:** Clean modular architecture separating core settings (`base.py`), local development with SQLite and Django Debug Toolbar (`dev.py`), and production deployment with PostgreSQL on Neon, WhiteNoise, and SSL/HTTPS protection (`prod.py`).
+* **Automated Cloud Deployment (Render & Neon):** Streamlined CI/CD deployment pipeline utilizing `build.sh` for dependency installation, static file collection, and database migrations, served via high-performance Gunicorn WSGI server.
 * **Class-Based Views (CBVs):** All CRUD workflows utilize Django's `ListView`, `DetailView`, `CreateView`, `UpdateView`, and `DeleteView`.
 * **Custom Authentication Backend:** `EmailOrUsernameModelBackend` enables users to authenticate using either their username or email address.
 * **Access Control & Permissions:** Protected views enforce authentication with `LoginRequiredMixin`. `WorkerUpdateView` enforces role-based access via `UserPassesTestMixin`, guaranteeing that users can only modify their own profile while administrators retain full modification rights.
@@ -290,3 +308,40 @@ Once running, access the application in your browser:
 
 The Django Admin panel is accessible at:
 👉 **[http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/)**
+
+---
+
+## 🚀 Production Deployment (Render & Neon)
+
+The application is deployed on **Render** with a managed serverless **PostgreSQL** database on **Neon**.
+
+🌐 **Live Application:** [https://it-company-task-manager-v9cq.onrender.com/](https://it-company-task-manager-v9cq.onrender.com/)
+
+### 🛠️ Render Web Service Configuration
+
+| Setting | Value |
+| :--- | :--- |
+| **Runtime** | Python |
+| **Build Command** | `./build.sh` |
+| **Start Command** | `gunicorn IT_company_task_manager.wsgi:application` |
+
+### 🔑 Environment Variables on Render
+
+| Variable | Description / Example |
+| :--- | :--- |
+| `DJANGO_SETTINGS_MODULE` | `IT_company_task_manager.settings.prod` |
+| `SECRET_KEY` | Strong production secret key |
+| `POSTGRES_DB` | PostgreSQL database name (e.g. `neondb`) |
+| `POSTGRES_USER` | PostgreSQL username (e.g. `neondb_owner`) |
+| `POSTGRES_PASSWORD` | PostgreSQL user password |
+| `POSTGRES_HOST` | PostgreSQL host domain on Neon |
+| `POSTGRES_DB_PORT` | `5432` |
+| `RENDER_EXTERNAL_HOSTNAME` | Automatically supplied by Render (e.g. `it-company-task-manager-v9cq.onrender.com`) |
+
+### 🗄️ Initial Data & Admin Setup on Production
+
+**Load Demo Dataset (Optional):**
+   Populate the production database with initial positions, task types, workers, and sample tasks:
+   ```bash
+   python manage.py loaddata dump.json --settings=IT_company_task_manager.settings.prod
+   ```
