@@ -4,6 +4,10 @@ A web application designed for tracking tasks, organizing team workload, and man
 
 🚀 **Live Production Demo:** [https://it-company-task-manager-v9cq.onrender.com/](https://it-company-task-manager-v9cq.onrender.com/)
 
+> 👤 **Test User (Demo Credentials):**
+> * **Username:** `test_user`
+> * **Password:** `test12345`
+
 [![Live Demo](https://img.shields.io/badge/Demo-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://it-company-task-manager-v9cq.onrender.com/)
 [![Python](https://img.shields.io/badge/Python-3.12%2B-blue?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![Django](https://img.shields.io/badge/Django-6.1%2B-092E20?style=for-the-badge&logo=django&logoColor=white)](https://www.djangoproject.com/)
@@ -317,6 +321,10 @@ The application is deployed on **Render** with a managed serverless **PostgreSQL
 
 🌐 **Live Application:** [https://it-company-task-manager-v9cq.onrender.com/](https://it-company-task-manager-v9cq.onrender.com/)
 
+> 👤 **Test User Credentials:**
+> * **Username:** `test_user`
+> * **Password:** `test12345`
+
 ### 🛠️ Render Web Service Configuration
 
 | Setting | Value |
@@ -340,7 +348,7 @@ The application is deployed on **Render** with a managed serverless **PostgreSQL
 
 ### 🗄️ Initial Data & Admin Setup on Production
 
-**Load Demo Dataset (Optional):**
+   **Load Demo Dataset (Optional):**
    Populate the production database with initial positions, task types, workers, and sample tasks:
    ```bash
    python manage.py loaddata dump.json --settings=IT_company_task_manager.settings.prod
