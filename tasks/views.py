@@ -3,13 +3,17 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views import generic
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import login
+from django.contrib.auth.mixins import (
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+)
 
 from tasks.models import TaskType, Position, Worker, Task
 from tasks.forms import (
     TaskForm,
     WorkerCreationForm,
-    WorkerPositionUpdateForm,
+    WorkerUpdateForm,
     WorkerUsernameSearchForm,
     TaskTypeNameSearchForm,
     PositionNameSearchForm,
@@ -149,10 +153,45 @@ class WorkerCreateView(LoginRequiredMixin, generic.CreateView):
     success_url = reverse_lazy("tasks:worker-list")
 
 
-class WorkerPositionUpdateView(LoginRequiredMixin, generic.UpdateView):
+class WorkerRegisterView(generic.CreateView):
     model = Worker
-    form_class = WorkerPositionUpdateForm
-    success_url = reverse_lazy("tasks:worker-list")
+    form_class = WorkerCreationForm
+    template_name = "registration/register.html"
+    success_url = reverse_lazy("tasks:index")
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return HttpResponseRedirect(reverse_lazy("tasks:index"))
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        login(
+            self.request,
+            self.object,
+            backend="tasks.backends.EmailOrUsernameModelBackend",
+        )
+        return response
+
+
+class WorkerUpdateView(
+    LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView
+):
+    model = Worker
+    form_class = WorkerUpdateForm
+    template_name = "tasks/worker_form.html"
+
+    def test_func(self):
+        worker = self.get_object()
+        return self.request.user.is_staff or self.request.user == worker
+
+    def get_success_url(self):
+        return reverse_lazy(
+            "tasks:worker-detail", kwargs={"pk": self.object.pk}
+        )
+
+
+WorkerPositionUpdateView = WorkerUpdateView
 
 
 class WorkerDeleteView(LoginRequiredMixin, generic.DeleteView):
