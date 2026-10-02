@@ -31,6 +31,11 @@ class ViewTests(TestCase):
         self.assertEqual(response.status_code, 302)
 
     def test_index_view_authenticated(self):
+        get_user_model().objects.create_superuser(
+            username="admin_super",
+            email="admin_super@test.com",
+            password="adminpassword123",
+        )
         self.client.force_login(self.user)
         response = self.client.get(reverse("tasks:index"))
         self.assertEqual(response.status_code, 200)
@@ -100,10 +105,16 @@ class ViewTests(TestCase):
         self.assertTrue(Task.objects.filter(name="New Task").exists())
 
     def test_worker_list_view(self):
+        admin_user = get_user_model().objects.create_superuser(
+            username="admin_super",
+            email="admin_super@test.com",
+            password="adminpassword123",
+        )
         self.client.force_login(self.user)
         response = self.client.get(reverse("tasks:worker-list"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.user.username)
+        self.assertNotContains(response, admin_user.username)
 
 
 class ToggleAssignToTaskTests(TestCase):

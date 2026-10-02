@@ -27,7 +27,7 @@ def index(request):
 
     num_task_types = TaskType.objects.count()
     num_positions = Position.objects.count()
-    num_workers = Worker.objects.count()
+    num_workers = Worker.objects.filter(is_superuser=False).count()
     num_tasks = Task.objects.count()
 
     num_visits = request.session.get("num_visits", 0)
@@ -128,7 +128,9 @@ class WorkerListView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         username = self.request.GET.get("username")
-        queryset = Worker.objects.all().select_related("position")
+        queryset = Worker.objects.filter(is_superuser=False).select_related(
+            "position"
+        )
         if username:
             return queryset.filter(username__icontains=username)
         return queryset

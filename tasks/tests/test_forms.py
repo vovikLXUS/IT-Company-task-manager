@@ -36,6 +36,17 @@ class FormTests(TestCase):
         form = TaskForm(data=form_data)
         self.assertTrue(form.is_valid())
 
+    def test_task_form_assignees_excludes_superuser(self):
+        admin = get_user_model().objects.create_superuser(
+            username="admin_user",
+            email="admin@test.com",
+            password="adminpassword123",
+        )
+        form = TaskForm()
+        assignees_qs = form.fields["assignees"].queryset
+        self.assertIn(self.worker, assignees_qs)
+        self.assertNotIn(admin, assignees_qs)
+
     def test_worker_creation_form(self):
         form_data = {
             "username": "newworker",

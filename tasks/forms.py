@@ -7,7 +7,7 @@ from tasks.models import Task, Worker
 
 class TaskForm(forms.ModelForm):
     assignees = forms.ModelMultipleChoiceField(
-        queryset=get_user_model().objects.all(),
+        queryset=get_user_model().objects.filter(is_superuser=False),
         widget=forms.CheckboxSelectMultiple,
         required=False,
     )
